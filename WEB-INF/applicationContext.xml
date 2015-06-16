@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+       http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.0.xsd
+       http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.0.xsd">
+
+    <!-- DAO's are kept in a separate file -->
+    <import resource="dao.xml"/>
+
+    <!-- Properties file for configuration -->
+    <bean id="propertyOverrideConfigurer" class="org.springframework.beans.factory.config.PropertyOverrideConfigurer">
+        <property name="location">
+            <value>file:${pragmacms.home}/conf/PragmaCMS.properties</value>
+        </property>
+        <property name="ignoreInvalidKeys" value="true" />
+    </bean>
+    <bean id="propertyPlaceholderConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name="location">
+            <value>file:${pragmacms.home}/conf/PragmaCMS.properties</value>
+        </property>
+    </bean>
+
+    <!-- APPLICATION SERVICES /////////////////////////////////////////////// -->
+
+    <!-- Content service, all content operations; Site, Template, Page-->
+    <bean id="contentService" class="com.pragmacraft.cms.service.content.ContentServiceImpl" init-method="init">
+        <property name="dataSource" ref="dataSource" />
+    </bean>
+
+    <!-- Template service, for templating-->
+    <bean id="templateService" class="com.pragmacraft.cms.service.template.TemplateServiceImpl" init-method="init">
+        <property name="templateFolder" value="${pragmacms.home}/data/template" />
+    </bean>
+
+    <!-- Resource service, for static resources -->
+    <bean id="resourceService" class="com.pragmacraft.cms.service.resource.ResourceServiceImpl">
+        <property name="rootFolder" value="${pragmacms.home}/data/www" />
+    </bean>
+
+    <!-- Account service, handles accounts and authors -->
+    <bean id="accountService" class="com.pragmacraft.cms.service.account.AccountServiceImpl">
+        <property name="dataSource" ref="dataSource" />
+    </bean>
+
+    <!-- INFRASTRUCTURE SERVICES /////////////////////////////////////////////// -->
+
+    <!-- Storage service -->
+    <bean id="storageService" class="com.pragmacraft.common.service.storage.StorageServiceImpl" init-method="init" destroy-method="destroy">
+        <property  name="storageFolder" value="${pragmacms.home}/data/storage" />
+        <property  name="storageDao" ref="storageDao" />
+        <property  name="debugMode" value="true" />
+        <property  name="referencingTables">
+            <list>
+                <map>
+                    <entry key="tableName" value="PAGE_ATTACHMENT" />
+                    <entry key="fieldName" value="content_key" />
+                </map>
+            </list>
+        </property>
+    </bean>
+
+</beans>

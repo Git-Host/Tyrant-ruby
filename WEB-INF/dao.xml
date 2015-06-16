@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+       http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.0.xsd
+       http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.0.xsd">         
+
+    
+    <!-- Datasource configuration, for database access -->
+    <bean id="dataSource"
+          class="org.apache.commons.dbcp.BasicDataSource"
+          p:driverClassName="${jdbc.driverClassName}"
+          p:url="${jdbc.url}"
+          p:username="${jdbc.username}"
+          p:password="${jdbc.password}" />
+          
+    <!-- Liquibase configuration, for automatic schema updating -->
+    <bean id="liquibase" class="com.pragmacraft.cms.helper.SpringLiquibaseWrapper">
+        <property name="dataSource" ref="dataSource" />
+        <property name="changeLog" value="/WEB-INF/database-changelog.xml" />
+        <property name="liquibaseEnabled" value="${jdbc.liquibaseEnabled}" />
+        <!--property name="contexts" value="test, production" /-->
+    </bean>
+    
+    <!-- Storage dao, used by storage service -->
+    <bean id="storageDao" class="com.pragmacraft.common.service.storage.dao.StorageDaoPostgresImpl">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="databaseConfiguration">
+            <map>
+                <entry key="tablePrefix" value=""/>
+            </map>
+        </property>
+    </bean>
+
+</beans>

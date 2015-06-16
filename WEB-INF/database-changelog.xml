@@ -1,0 +1,541 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog logicalFilePath="database-changelog.xml"
+                   xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+    <changeSet author="fmguler" id="init">
+    </changeSet>
+    <changeSet author="fmguler" id="0">
+        <tagDatabase tag="tag-init"/>
+    </changeSet>
+
+    <!-- CMS SCHEMA >> -->
+    <changeSet author="fmguler" id="1">
+        <createTable schemaName="public" tableName="attribute">
+            <column autoIncrement="true" name="id" type="serial">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="attribute_pkey"/>
+            </column>
+            <column name="type" type="VARCHAR(1000)"/>
+            <column name="attribute" type="VARCHAR(1000)"/>
+            <column name="value" type="TEXT"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="fmguler" id="2">
+        <createTable schemaName="public" tableName="template">
+            <column autoIncrement="true" name="id" type="serial">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="template_pkey"/>
+            </column>
+            <column name="name" type="VARCHAR(1000)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="fmguler" id="3">
+        <createTable schemaName="public" tableName="page">
+            <column autoIncrement="true" name="id" type="serial">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="page_pkey"/>
+            </column>
+            <column name="path" type="VARCHAR(1000)"/>
+            <column name="template_id" type="int4">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="fmguler" id="4">
+        <createTable schemaName="public" tableName="template_attribute">
+            <column autoIncrement="true" name="id" type="serial">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="template_attribute_pkey"/>
+            </column>
+            <column name="template_id" type="int4">
+                <constraints nullable="false"/>
+            </column>
+            <column name="attribute_id" type="int4">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="fmguler" id="5">
+        <createTable schemaName="public" tableName="page_attribute">
+            <column autoIncrement="true" name="id" type="serial">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="page_attribute_pkey"/>
+            </column>
+            <column name="page_id" type="int4">
+                <constraints nullable="false"/>
+            </column>
+            <column name="attribute_id" type="int4">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="fmguler" id="6">
+        <addForeignKeyConstraint
+            constraintName="page_template_id_fkey"
+            baseTableSchemaName="public" baseTableName="page" baseColumnNames="template_id"
+            referencedTableSchemaName="public"   referencedTableName="template" referencedColumnNames="id"
+            deferrable="false" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" />
+    </changeSet>
+    <changeSet author="fmguler" id="7">
+        <addForeignKeyConstraint
+            constraintName="template_attribute_template_id_fkey"
+            baseTableSchemaName="public" baseTableName="template_attribute" baseColumnNames="template_id"
+            referencedTableSchemaName="public"   referencedTableName="template" referencedColumnNames="id"
+            deferrable="false" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" />
+    </changeSet>
+    <changeSet author="fmguler" id="8">
+        <addForeignKeyConstraint
+            constraintName="template_attribute_attribute_id_fkey"
+            baseTableSchemaName="public" baseTableName="template_attribute" baseColumnNames="attribute_id"
+            referencedTableSchemaName="public"   referencedTableName="attribute" referencedColumnNames="id"
+            deferrable="false" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" />
+    </changeSet>
+    <changeSet author="fmguler" id="9">
+        <addForeignKeyConstraint
+            constraintName="page_attribute_page_id_fkey"
+            baseTableSchemaName="public" baseTableName="page_attribute" baseColumnNames="page_id"
+            referencedTableSchemaName="public"   referencedTableName="page" referencedColumnNames="id"
+            deferrable="false" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" />
+    </changeSet>
+    <changeSet author="fmguler" id="10">
+        <addForeignKeyConstraint
+            constraintName="page_attribute_attribute_id_fkey"
+            baseTableSchemaName="public" baseTableName="page_attribute" baseColumnNames="attribute_id"
+            referencedTableSchemaName="public"   referencedTableName="attribute" referencedColumnNames="id"
+            deferrable="false" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" />
+    </changeSet>
+    <changeSet author="fmguler" id="11">
+        <tagDatabase tag="tag-basic-domain"/>
+    </changeSet>
+    <changeSet author="fmguler" id="12">
+        <createTable schemaName="public" tableName="attribute_enum">
+            <column autoIncrement="true" name="id" type="serial">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="attribute_enum_pkey"/>
+            </column>
+            <column name="attribute_name" type="VARCHAR(1000)"/>
+            <column name="attribute_type" type="int"/>
+            <column name="template_id" type="int"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="fmguler" id="13">
+        <addForeignKeyConstraint
+            constraintName="attribute_enum_template_id_fkey"
+            baseTableSchemaName="public" baseTableName="attribute_enum" baseColumnNames="template_id"
+            referencedTableSchemaName="public" referencedTableName="template" referencedColumnNames="id"
+            deferrable="false" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" />
+    </changeSet>
+    <changeSet author="fmguler" id="14">
+        <tagDatabase tag="tag-enum"/>
+    </changeSet>
+    <!-- << CMS SCHEMA -->
+
+    <!-- NEW SIMPLIFIED SCHEMA >> -->
+    <changeSet author="fmguler" id="15">
+        <addColumn tableName="page_attribute" schemaName="public">
+            <column name="attribute" type="VARCHAR(1000)"/>
+            <column name="value" type="TEXT"/>
+            <column name="version" type="int"/>
+            <column name="author" type="VARCHAR(1000)"/>
+            <column name="comment" type="VARCHAR(1000)"/>
+            <column name="date" type="TIMESTAMP WITHOUT TIME ZONE" />
+        </addColumn>
+    </changeSet>
+    <changeSet author="fmguler" id="16">
+        <addColumn tableName="template_attribute" schemaName="public">
+            <column name="attribute" type="VARCHAR(1000)"/>
+            <column name="value" type="TEXT"/>
+            <column name="version" type="int"/>
+            <column name="author" type="VARCHAR(1000)"/>
+            <column name="comment" type="VARCHAR(1000)"/>
+            <column name="date" type="TIMESTAMP WITHOUT TIME ZONE" />
+        </addColumn>
+    </changeSet>
+    <changeSet author="fmguler" id="17">
+        <sql>
+            UPDATE page_attribute SET attribute = (select a.attribute from attribute a where a.id = attribute_id), value = (select a.value from attribute a where a.id = attribute_id), version = 0, author = 'admin', comment= '', date = now();
+            UPDATE template_attribute SET attribute = (select a.attribute from attribute a where a.id = attribute_id), value = (select a.value from attribute a where a.id = attribute_id), version = 0, author = 'admin', comment= '', date = now();
+        </sql>
+        <rollback/>
+    </changeSet>
+    <!-- Note: this change does not support rollback, and will screw db if you do so -->
+    <changeSet author="fmguler" id="18">
+        <dropForeignKeyConstraint constraintName="page_attribute_attribute_id_fkey" baseTableName="page_attribute"/>
+        <dropForeignKeyConstraint constraintName="template_attribute_attribute_id_fkey" baseTableName="template_attribute"/>
+        <dropTable tableName="attribute" schemaName="public" />
+        <dropColumn tableName="page_attribute" columnName="attribute_id"/>
+        <dropColumn tableName="template_attribute" columnName="attribute_id"/>
+    </changeSet>
+    <changeSet author="fmguler" id="19">
+        <dropTable tableName="attribute_enum" schemaName="public"/>
+    </changeSet>
+    <changeSet author="fmguler" id="20">
+        <tagDatabase tag="tag-simplified-domain"/>
+    </changeSet>
+    <!-- << NEW SIMPLIFIED SCHEMA -->
+
+    <!-- ATTACHMENT SUPPORT >> -->
+    <changeSet author="fmguler" id="21">
+        <createTable schemaName="public" tableName="page_attachment">
+            <column autoIncrement="true" name="id" type="serial">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="page_attachment_pkey"/>
+            </column>
+            <column name="page_id" type="int4">
+                <constraints nullable="false"/>
+            </column>
+            <column name="name" type="VARCHAR(1000)"/>
+            <column name="content_key" type="VARCHAR(1000)"/>
+            <column name="content_type" type="VARCHAR(1000)"/>
+            <column name="content_length" type="int"/>
+            <column name="last_modified" type="TIMESTAMP WITHOUT TIME ZONE" />
+        </createTable>
+    </changeSet>
+    <changeSet author="fmguler" id="22">
+        <addForeignKeyConstraint
+            constraintName="page_attachment_attribute_id_fkey"
+            baseTableSchemaName="public" baseTableName="page_attachment" baseColumnNames="page_id"
+            referencedTableSchemaName="public"   referencedTableName="page" referencedColumnNames="id"
+            deferrable="false" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" />
+    </changeSet>
+    <changeSet author="fmguler" id="23">
+        <createTable schemaName="public" tableName="storage_object">
+            <column name="key" type="VARCHAR(1024)">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="storage_object_pkey"/>
+            </column>
+            <column name="size" type="int4" defaultValueNumeric="0"/>
+            <column name="hash" type="VARCHAR(1024)"/>
+        </createTable>
+    </changeSet>
+    <!-- to add caching for pages -->
+    <changeSet author="fmguler" id="24">
+        <addColumn tableName="page" schemaName="public">
+            <column name="last_modified" type="TIMESTAMP WITHOUT TIME ZONE" defaultValueDate="now()" />
+        </addColumn>
+    </changeSet>
+    <!-- to add redirect for pages -->
+    <changeSet author="fmguler" id="25">
+        <addColumn tableName="page" schemaName="public">
+            <column name="new_path" type="varchar(1000)" />
+        </addColumn>
+    </changeSet>
+    <!-- << ATTACHMENT SUPPORT -->
+
+    <!-- MILESTONE 0.3 AUTHOR/ETC >> -->
+    <!-- add author table, for login -->
+    <changeSet author="fmguler" id="26">
+        <createTable schemaName="public" tableName="author">
+            <column autoIncrement="true" name="id" type="serial">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="author_pkey"/>
+            </column>
+            <column name="username" type="VARCHAR(1000)"/>
+            <column name="password" type="VARCHAR(1000)"/>
+            <column name="first_name" type="VARCHAR(1000)"/>
+            <column name="last_name" type="VARCHAR(1000)"/>
+            <column name="email" type="VARCHAR(1000)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="fmguler" id="27">
+        <insert schemaName="public" tableName="author">
+            <column name="username" value="admin"/>
+            <column name="password" value="21232f297a57a5a743894a0e4a801fc3"/>
+            <column name="first_name" value="System"/>
+            <column name="last_name" value="Administrator"/>
+            <column name="email" value="root@localhost"/>
+        </insert>
+    </changeSet>
+    <!-- refactoring versions of page attribute to separate table -->
+    <changeSet author="fmguler" id="28">
+        <createTable schemaName="public" tableName="page_attribute_history">
+            <column autoIncrement="true" name="id" type="serial">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="page_attribute_history_pkey"/>
+            </column>
+            <column name="page_id" type="int"/>
+            <column name="attribute" type="VARCHAR(1000)"/>
+            <column name="value" type="TEXT"/>
+            <column name="version" type="int"/>
+            <column name="author" type="VARCHAR(1000)"/>
+            <column name="comment" type="VARCHAR(1000)"/>
+            <column name="date" type="TIMESTAMP WITHOUT TIME ZONE"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="fmguler" id="29">
+        <addForeignKeyConstraint
+            constraintName="page_attribute_history_page_id_fkey"
+            baseTableSchemaName="public" baseTableName="page_attribute_history" baseColumnNames="page_id"
+            referencedTableSchemaName="public" referencedTableName="page" referencedColumnNames="id"
+            deferrable="false" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" />
+    </changeSet>
+    <!-- move old versions to history table -->
+    <changeSet author="fmguler" id="30">
+        <sql>
+            insert into page_attribute_history (page_id, attribute, value, version, author, comment, date) select page_id, attribute, value, version, author, comment, date from page_attribute;
+            delete from page_attribute where id in
+            (select pa.id from page_attribute pa
+            join (select page_id as __page_id, attribute as __attribute, max(version) as __max_version from page_attribute group by attribute, page_id) __pa
+            on (__pa.__page_id = pa.page_id and __pa.__attribute = pa.attribute)
+            where pa.version &lt; __pa.__max_version);
+        </sql>
+        <rollback/>
+    </changeSet>
+    <changeSet author="fmguler" id="31">
+        <addUniqueConstraint schemaName="public" tableName="page_attribute" columnNames="page_id, attribute" constraintName="page_attribute_page_id_attribute_unique"/>
+    </changeSet>
+    <!-- refactoring versions of template attribute to separate table -->
+    <changeSet author="fmguler" id="32">
+        <createTable schemaName="public" tableName="template_attribute_history">
+            <column autoIncrement="true" name="id" type="serial">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="template_attribute_history_pkey"/>
+            </column>
+            <column name="template_id" type="int"/>
+            <column name="attribute" type="VARCHAR(1000)"/>
+            <column name="value" type="VARCHAR(1000)"/>
+            <column name="version" type="int"/>
+            <column name="author" type="VARCHAR(1000)"/>
+            <column name="comment" type="VARCHAR(1000)"/>
+            <column name="date" type="TIMESTAMP WITHOUT TIME ZONE"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="fmguler" id="33">
+        <addForeignKeyConstraint
+            constraintName="template_attribute_history_template_id_fkey"
+            baseTableSchemaName="public" baseTableName="template_attribute_history" baseColumnNames="template_id"
+            referencedTableSchemaName="public" referencedTableName="template" referencedColumnNames="id"
+            deferrable="false" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" />
+    </changeSet>
+    <!-- move old versions to history table -->
+    <changeSet author="fmguler" id="34">
+        <sql>
+            insert into template_attribute_history (template_id, attribute, value, version, author, comment, date) select template_id, attribute, value, version, author, comment, date from template_attribute;
+            delete from template_attribute where id in
+            (select ta.id from template_attribute ta
+            join (select template_id as __template_id, attribute as __attribute, max(version) as __max_version from template_attribute group by attribute, template_id) __ta
+            on (__ta.__template_id = ta.template_id and __ta.__attribute = ta.attribute)
+            where ta.version &lt; __ta.__max_version);
+        </sql>
+        <rollback/>
+    </changeSet>
+    <changeSet author="fmguler" id="35">
+        <addUniqueConstraint schemaName="public" tableName="template_attribute" columnNames="template_id, attribute" constraintName="template_attribute_template_id_attribute_unique"/>
+    </changeSet>
+    <!-- add path field to template, copy from name field -->
+    <changeSet author="fmguler" id="36">
+        <addColumn tableName="template" schemaName="public">
+            <column name="path" type="varchar(1000)" />
+        </addColumn>
+    </changeSet>
+    <changeSet author="fmguler" id="37">
+        <sql>
+            update template set path = '/' || name;
+        </sql>
+        <rollback/>
+    </changeSet>
+    <!-- <<MILESTONE 0.3 AUTHOR/ETC -->
+
+    <!-- MILESTONE 0.31 EDITTEMPLATEFIX >> -->
+    <!-- remove template attr tables -->
+    <changeSet author="fmguler" id="38">
+        <dropTable tableName="template_attribute_history" schemaName="public"/>
+        <dropTable tableName="template_attribute" schemaName="public"/>
+    </changeSet>
+    <!-- add template history table -->
+    <changeSet author="fmguler" id="39">
+        <createTable schemaName="public" tableName="template_history">
+            <column autoIncrement="true" name="id" type="serial">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="template_history_pkey"/>
+            </column>
+            <column name="template_id" type="int"/>
+            <column name="html" type="TEXT"/>
+            <column name="author" type="VARCHAR(1000)"/>
+            <column name="comment" type="VARCHAR(1000)"/>
+            <column name="date" type="TIMESTAMP WITHOUT TIME ZONE"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="fmguler" id="40">
+        <addForeignKeyConstraint
+            constraintName="template_history_template_id_fkey"
+            baseTableSchemaName="public" baseTableName="template_history" baseColumnNames="template_id"
+            referencedTableSchemaName="public" referencedTableName="template" referencedColumnNames="id"
+            deferrable="false" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" />
+    </changeSet>
+    <!-- add version to template table -->
+    <changeSet author="fmguler" id="41">
+        <addColumn tableName="template" schemaName="public">
+            <column name="version" type="int"/>
+        </addColumn>
+    </changeSet>
+    <!-- <<MILESTONE 0.31 EDITTEMPLATEFIX -->
+
+    <!-- MILESTONE 0.32 MULTISITE >> -->
+    <!-- add site table -->
+    <changeSet author="fmguler" id="42">
+        <createTable schemaName="public" tableName="site">
+            <column autoIncrement="true" name="id" type="serial">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="site_pkey"/>
+            </column>
+            <column name="domains" type="VARCHAR(1000)"/>
+            <column name="company" type="VARCHAR(1000)"/>
+            <column name="address" type="VARCHAR(1000)"/>
+            <column name="city" type="VARCHAR(1000)"/>
+            <column name="state" type="VARCHAR(1000)"/>
+            <column name="country" type="VARCHAR(1000)"/>
+            <column name="phone" type="VARCHAR(1000)"/>
+            <column name="primary_contact_id" type="int"/>
+        </createTable>
+    </changeSet>
+    <!-- add site references to objects -->
+    <changeSet author="fmguler" id="43">
+        <addColumn tableName="author" schemaName="public">
+            <column name="site_id" type="int"/>
+        </addColumn>
+        <addColumn tableName="page" schemaName="public">
+            <column name="site_id" type="int"/>
+        </addColumn>
+        <addColumn tableName="template" schemaName="public">
+            <column name="site_id" type="int"/>
+        </addColumn>
+    </changeSet>
+    <!-- constraints for site references -->
+    <changeSet author="fmguler" id="44">
+        <addForeignKeyConstraint
+            constraintName="author_site_id_fkey"
+            baseTableSchemaName="public" baseTableName="author" baseColumnNames="site_id"
+            referencedTableSchemaName="public" referencedTableName="site" referencedColumnNames="id"
+            deferrable="false" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" />
+        <addForeignKeyConstraint
+            constraintName="page_site_id_fkey"
+            baseTableSchemaName="public" baseTableName="page" baseColumnNames="site_id"
+            referencedTableSchemaName="public" referencedTableName="site" referencedColumnNames="id"
+            deferrable="false" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" />
+        <addForeignKeyConstraint
+            constraintName="site_primary_contact_id_fkey"
+            baseTableSchemaName="public" baseTableName="site" baseColumnNames="primary_contact_id"
+            referencedTableSchemaName="public" referencedTableName="author" referencedColumnNames="id"
+            deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="CASCADE" />
+        <addForeignKeyConstraint
+            constraintName="template_site_id_fkey"
+            baseTableSchemaName="public" baseTableName="template" baseColumnNames="site_id"
+            referencedTableSchemaName="public" referencedTableName="site" referencedColumnNames="id"
+            deferrable="false" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" />
+    </changeSet>
+    <!-- add default site record and point existing records to this -->
+    <changeSet author="fmguler" id="45">
+        <insert schemaName="public" tableName="site">
+            <column name="domains" value="*"/>
+            <column name="company" value="Default Web Site"/>
+            <column name="address" value=""/>
+            <column name="city" value=""/>
+            <column name="state" value=""/>
+            <column name="country" value=""/>
+            <column name="phone" value=""/>
+            <column name="primary_contact_id" valueNumeric="1"/>
+        </insert>
+        <rollback/>
+    </changeSet>
+    <changeSet author="fmguler" id="46">
+        <sql>
+            update author set site_id = 1;
+            update page set site_id = 1;
+            update template set site_id = 1;
+        </sql>
+        <rollback/>
+    </changeSet>
+
+    <!-- add account table -->
+    <changeSet author="fmguler" id="47">
+        <createTable schemaName="public" tableName="account">
+            <column autoIncrement="true" name="id" type="serial">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="account_pkey"/>
+            </column>
+            <column name="company" type="VARCHAR(1000)"/>
+            <column name="address" type="VARCHAR(1000)"/>
+            <column name="city" type="VARCHAR(1000)"/>
+            <column name="state" type="VARCHAR(1000)"/>
+            <column name="country" type="VARCHAR(1000)"/>
+            <column name="phone" type="VARCHAR(1000)"/>
+            <column name="primary_contact_id" type="int"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="fmguler" id="48">
+        <dropColumn tableName="site" columnName="company" schemaName="public"/>
+        <dropColumn tableName="site" columnName="address" schemaName="public"/>
+        <dropColumn tableName="site" columnName="city" schemaName="public"/>
+        <dropColumn tableName="site" columnName="state" schemaName="public"/>
+        <dropColumn tableName="site" columnName="country" schemaName="public"/>
+        <dropColumn tableName="site" columnName="phone" schemaName="public"/>
+        <dropColumn tableName="site" columnName="primary_contact_id" schemaName="public"/>
+    </changeSet>
+    <changeSet author="fmguler" id="49">
+        <dropColumn tableName="author" columnName="site_id" schemaName="public"/>
+        <addColumn tableName="author" schemaName="public">
+            <column name="account_id" type="int"/>
+        </addColumn>
+        <addColumn tableName="site" schemaName="public">
+            <column name="account_id" type="int"/>
+        </addColumn>
+    </changeSet>
+    <!-- constraints for account references -->
+    <changeSet author="fmguler" id="50">
+        <addForeignKeyConstraint
+            constraintName="account_primary_contact_id_fkey"
+            baseTableSchemaName="public" baseTableName="account" baseColumnNames="primary_contact_id"
+            referencedTableSchemaName="public" referencedTableName="author" referencedColumnNames="id"
+            deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="CASCADE" />
+        <addForeignKeyConstraint
+            constraintName="author_account_id_fkey"
+            baseTableSchemaName="public" baseTableName="author" baseColumnNames="account_id"
+            referencedTableSchemaName="public" referencedTableName="account" referencedColumnNames="id"
+            deferrable="false" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" />
+        <addForeignKeyConstraint
+            constraintName="site_account_id_fkey"
+            baseTableSchemaName="public" baseTableName="site" baseColumnNames="account_id"
+            referencedTableSchemaName="public" referencedTableName="account" referencedColumnNames="id"
+            deferrable="false" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" />
+    </changeSet>
+    <!-- add default account record and point existing records to this -->
+    <changeSet author="fmguler" id="51">
+        <insert schemaName="public" tableName="account">
+            <column name="company" value="Default Account"/>
+            <column name="address" value=""/>
+            <column name="city" value=""/>
+            <column name="state" value=""/>
+            <column name="country" value=""/>
+            <column name="phone" value=""/>
+            <column name="primary_contact_id" valueNumeric="1"/>
+        </insert>
+        <rollback/>
+    </changeSet>
+    <changeSet author="fmguler" id="52">
+        <sql>
+            update author set account_id = 1;
+            update site set account_id = 1;
+        </sql>
+        <rollback/>
+    </changeSet>
+    <!-- make username global unique -->
+    <changeSet author="fmguler" id="53">
+        <addUniqueConstraint schemaName="public" tableName="author" columnNames="username" constraintName="author_username_unique"/>
+    </changeSet>
+    <!-- <<MILESTONE 0.32 MULTISITE -->
+     <changeSet author="fmguler" id="54">
+        <tagDatabase tag="tag-milestone-03"/>
+    </changeSet>
+    
+    <!-- <<MILESTONE 1.0 SCENARIO -->    
+    <!-- add template attribute for scanned attributes enumeration and default values -->
+    <changeSet author="fmguler" id="55">
+        <createTable schemaName="public" tableName="template_attribute">
+            <column autoIncrement="true" name="id" type="serial">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="template_attribute_pkey"/>
+            </column>
+            <column name="template_id" type="int"/>
+            <column name="attribute" type="VARCHAR(1000)"/>            
+            <column name="value" type="TEXT"/>
+            <column name="removed" type="BOOLEAN"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="fmguler" id="56">
+        <addForeignKeyConstraint
+            constraintName="template_attribute_template_id_fkey"
+            baseTableSchemaName="public" baseTableName="template_attribute" baseColumnNames="template_id"
+            referencedTableSchemaName="public" referencedTableName="template" referencedColumnNames="id"
+            deferrable="false" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" />
+    </changeSet>
+    <changeSet author="fmguler" id="57">
+        <addUniqueConstraint schemaName="public" tableName="template_attribute" columnNames="template_id, attribute" constraintName="template_attribute_template_id_attribute_unique"/>
+    </changeSet>
+</databaseChangeLog>
